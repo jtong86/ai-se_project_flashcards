@@ -59,3 +59,6 @@ The project requires a modern web browser with JavaScript enabled.
 * Save decks so changes remain after refreshing the page
 * Add additional study and review features
 * Improve the application for smaller screen sizes
+
+
+Please Check out this video: https://www.loom.com/share/95203aad17254eda848a216f4d9842af
