@@ -1,3 +1,4 @@
+
 .carousel {
   display: none;
   flex-direction: column;
@@ -17,6 +18,7 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
+  width: 100%;
 }
 
 .carousel__card {
@@ -37,7 +39,10 @@
   font-weight: 700;
   line-height: 1.2;
   text-align: center;
+  overflow-wrap: anywhere;
 }
+
+/* Flashcard Colors */
 
 .carousel__card_color_green {
   background-color: #64d583;
@@ -65,6 +70,16 @@
 
 .carousel__card_color_white {
   background-color: #fff;
+}
+
+/* Navigation Controls */
+
+.carousel__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .carousel__btn {
@@ -96,7 +111,6 @@
 }
 
 .carousel__btn_type_flip {
-  margin-top: 20px;
   background-image: url("../images/flip.svg");
   background-size: 28px 28px;
 }
@@ -105,4 +119,110 @@
 .carousel__btn_disabled:hover {
   cursor: default;
   opacity: 20%;
+}
+
+/* Mobile */
+
+@media screen and (max-width: 600px) {
+  .carousel {
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel__title {
+    margin: 0 0 26px;
+    color: #888;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .carousel__row {
+    width: 100%;
+    gap: 0;
+  }
+
+  .carousel__card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: min(420px, 48dvh);
+    min-height: 280px;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 5px 14px rgb(0 0 0 / 0.12);
+  }
+
+  .carousel__card-text {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .carousel__card_color_white {
+    background-color: #fff;
+    box-shadow: 0 5px 14px rgb(0 0 0 / 0.15);
+  }
+
+  .carousel__card_color_white .carousel__card-text {
+    font-size: 19px;
+    font-weight: 500;
+  }
+
+  .carousel__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 30px;
+    gap: 12px;
+  }
+
+  .carousel__btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+  }
+
+  .carousel__btn_type_flip {
+    margin-top: 0;
+  }
+
+  .carousel__btn_disabled,
+  .carousel__btn_disabled:hover {
+    opacity: 20%;
+  }
+}
+
+/* Smaller Phones */
+
+@media screen and (max-width: 360px) {
+  .carousel__title {
+    margin-bottom: 20px;
+    font-size: 12px;
+  }
+
+  .carousel__card {
+    min-height: 260px;
+    padding: 16px;
+  }
+
+  .carousel__card-text {
+    font-size: 23px;
+  }
+
+  .carousel__card_color_white .carousel__card-text {
+    font-size: 18px;
+  }
+
+  .carousel__btn {
+    width: 40px;
+    height: 40px;
+  }
 }

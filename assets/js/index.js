@@ -1,150 +1,322 @@
+
 import { decks, getDeckByID } from "./decks.js";
 import { hexToString } from "./colors.js";
 import { renderCarouselView } from "./carousel.js";
 import { renderDeckView } from "./deck-view.js";
 
+// =====================================
+// DOM ELEMENTS
+// =====================================
+
 const deckTemplateEl = document.querySelector("#deck-template");
 
 const homeSectionEl = document.querySelector("#home");
-const homeDeckListEl =
-  homeSectionEl.querySelector(".gallery__list");
-
 const deckViewSectionEl = document.querySelector("#deck-view");
-const practiceBtnEl =
-  deckViewSectionEl.querySelector(".gallery__practice-btn");
+const carouselSectionEl = document.querySelector("#carousel");
+const aboutSectionEl = document.querySelector("#about");
+const notFoundSectionEl = document.querySelector("#not-found");
 
-const mainContentEl = document.querySelector(
-  ".page__main-content"
-);
+const homeListEl = homeSectionEl.querySelector(".gallery__list");
 
-const carouselSectionEl = document.querySelector(".carousel");
-const notFoundSectionEl = document.querySelector(".not-found");
-const aboutSectionEl = document.querySelector(".about");
+const mainContentEl = document.querySelector(".page__main-content");
 
-let currentDeck = null;
+const newDeckBtn = document.querySelector("#new-deck-btn");
+const newCardBtn = document.querySelector("#new-card-btn");
 
-function createDeckEl(item) {
+// =====================================
+// DELETED DECKS AND CARDS
+// =====================================
+
+// Track deleted decks during the current session.
+const deletedDeckIds = new Set();
+
+// Track deleted cards for each deck.
+const deletedCardIds = new Map();
+
+// =====================================
+// GET ACTIVE CARDS
+// =====================================
+
+function getActiveCards(deck) {
+  const deleted = deletedCardIds.get(deck.id) || new Set();
+
+  return deck.cards.filter((card) => !deleted.has(card.id));
+}
+
+// =====================================
+// CREATE DECK ELEMENT
+// =====================================
+
+function createDeckEl(deck) {
   const cloneEl = deckTemplateEl.content
     .querySelector("li")
     .cloneNode(true);
 
-  const deckEl = cloneEl.querySelector(".card");
+  const cardEl = cloneEl.querySelector(".card");
   const titleEl = cloneEl.querySelector(".card__title");
-  const cardCountEl = cloneEl.querySelector(
-    ".card__card-count"
-  );
-  const deleteBtnEl = cloneEl.querySelector(
+  const countEl = cloneEl.querySelector(".card__card-count");
+  const linkEl = cloneEl.querySelector(".card__link");
+
+  const deleteBtn = cloneEl.querySelector(
     ".card__btn_type_delete"
   );
-  const deckLinkEl = cloneEl.querySelector(".card__link");
 
-  titleEl.textContent = item.name;
-  cardCountEl.textContent = `${item.cards.length} Cards`;
+  // Apply the deck color.
+  const colorName = hexToString(deck.color) || "green";
 
-  const colorName = hexToString(item.color);
+  cardEl.classList.add(`card_color_${colorName}`);
 
-  deckEl.classList.remove("card_color_green");
+  // Set the deck title.
+  titleEl.textContent = deck.name;
 
-  if (colorName) {
-    deckEl.classList.add(`card_color_${colorName}`);
-  }
+  // Display the number of active cards.
+  countEl.textContent = `${getActiveCards(deck).length} Cards`;
 
-  deckLinkEl.href = `#deck/${item.id}`;
+  // Navigate to the selected deck.
+  linkEl.href = `#deck/${deck.id}`;
 
-  deckLinkEl.setAttribute(
+  linkEl.setAttribute(
     "aria-label",
-    `Open ${item.name} deck`
+    `Open ${deck.name} deck`
   );
 
-  deleteBtnEl.setAttribute(
+  // Delete the selected deck.
+  deleteBtn.setAttribute(
     "aria-label",
-    `Delete ${item.name} deck`
+    `Delete ${deck.name} deck`
   );
 
-  deleteBtnEl.addEventListener("click", () => {
-    cloneEl.remove();
+  deleteBtn.addEventListener("click", () => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${deck.name}?`
+    );
+
+    if (confirmed) {
+      deletedDeckIds.add(deck.id);
+
+      renderHomeView();
+    }
   });
 
   return cloneEl;
 }
 
-function renderDeckEl(item) {
-  const deckEl = createDeckEl(item);
-  homeDeckListEl.prepend(deckEl);
-}
+// =====================================
+// RENDER HOME VIEW
+// =====================================
 
 function renderHomeView() {
-  homeDeckListEl.innerHTML = "";
+  // Clear existing deck elements.
+  homeListEl.replaceChildren();
 
-  decks.forEach(renderDeckEl);
+  // Filter deleted decks.
+  const activeDecks = decks.filter(
+    (deck) => !deletedDeckIds.has(deck.id)
+  );
+
+  // Render the remaining decks.
+  activeDecks.forEach((deck) => {
+    const deckEl = createDeckEl(deck);
+
+    homeListEl.append(deckEl);
+  });
 }
+
+// =====================================
+// HIDE ALL SECTIONS
+// =====================================
 
 function hideAllSections() {
   homeSectionEl.style.display = "none";
   deckViewSectionEl.style.display = "none";
   carouselSectionEl.style.display = "none";
-  notFoundSectionEl.style.display = "none";
   aboutSectionEl.style.display = "none";
+  notFoundSectionEl.style.display = "none";
 }
 
-function router() {
-  const hash = window.location.hash.slice(1);
+// =====================================
+// HANDLE CARD DELETION
+// =====================================
 
+function handleCardDelete(deck, cardId) {
+  // Create a deleted-card set if needed.
+  if (!deletedCardIds.has(deck.id)) {
+    deletedCardIds.set(deck.id, new Set());
+  }
+
+  // Add the deleted card ID.
+  deletedCardIds.get(deck.id).add(cardId);
+
+  // Refresh the deck view.
+  renderDeckView(
+    {
+      ...deck,
+      cards: getActiveCards(deck),
+    },
+    (nextCardId) => {
+      handleCardDelete(deck, nextCardId);
+    }
+  );
+}
+
+// =====================================
+// RENDER INDIVIDUAL DECK
+// =====================================
+
+function showDeckView(deck) {
+  const activeDeck = {
+    ...deck,
+    cards: getActiveCards(deck),
+  };
+
+  renderDeckView(activeDeck, (cardId) => {
+    handleCardDelete(deck, cardId);
+  });
+
+  deckViewSectionEl.style.display = "flex";
+}
+
+// =====================================
+// RENDER CAROUSEL
+// =====================================
+
+function showCarouselView(deck) {
+  const activeDeck = {
+    ...deck,
+    cards: getActiveCards(deck),
+  };
+
+  // Do not start practice mode with no cards.
+  if (activeDeck.cards.length === 0) {
+    window.location.hash = `deck/${deck.id}`;
+    return;
+  }
+
+  carouselSectionEl.style.display = "flex";
+
+  mainContentEl.classList.add(
+    "page__main-content_location_carousel"
+  );
+
+  renderCarouselView(activeDeck);
+}
+
+// =====================================
+// ROUTER
+// =====================================
+
+function router() {
+  // Read the current URL hash.
+  const hash = decodeURIComponent(
+    window.location.hash.slice(1)
+  );
+
+  // Hide all sections before showing the active view.
   hideAllSections();
 
+  // Reset carousel-specific page styling.
   mainContentEl.classList.remove(
     "page__main-content_location_carousel"
   );
 
+  // -----------------------------------
+  // HOME / MY DECKS
+  // -----------------------------------
+
   if (hash === "" || hash === "home") {
-    currentDeck = null;
-
-    homeSectionEl.style.display = "block";
     renderHomeView();
-  } else if (hash === "about") {
-    currentDeck = null;
 
-    aboutSectionEl.style.display = "block";
-  } else if (hash.startsWith("deck/")) {
-    const deckId = hash.split("/")[1];
-    currentDeck = getDeckByID(deckId);
+    homeSectionEl.style.display = "flex";
 
-    if (currentDeck) {
-      deckViewSectionEl.style.display = "block";
-      renderDeckView(currentDeck);
-    } else {
-      currentDeck = null;
-      notFoundSectionEl.style.display = "block";
-    }
-  } else if (hash.startsWith("carousel/")) {
-    const deckId = hash.split("/")[1];
-    currentDeck = getDeckByID(deckId);
-
-    if (currentDeck) {
-      carouselSectionEl.style.display = "flex";
-
-      mainContentEl.classList.add(
-        "page__main-content_location_carousel"
-      );
-
-      renderCarouselView(currentDeck);
-    } else {
-      currentDeck = null;
-      notFoundSectionEl.style.display = "block";
-    }
-  } else {
-    currentDeck = null;
-    notFoundSectionEl.style.display = "block";
+    return;
   }
+
+  // -----------------------------------
+  // ABOUT
+  // -----------------------------------
+
+  if (hash === "about") {
+    aboutSectionEl.style.display = "block";
+
+    return;
+  }
+
+  // -----------------------------------
+  // DECK AND CAROUSEL ROUTES
+  // -----------------------------------
+
+  const [view, deckId, extra] = hash.split("/");
+
+  if (
+    (view === "deck" || view === "carousel") &&
+    deckId &&
+    extra === undefined
+  ) {
+    // Find the selected deck.
+    const deck = getDeckByID(deckId);
+
+    // Handle missing or deleted decks.
+    if (!deck || deletedDeckIds.has(deckId)) {
+      notFoundSectionEl.style.display = "block";
+
+      return;
+    }
+
+    // Show individual deck.
+    if (view === "deck") {
+      showDeckView(deck);
+
+      return;
+    }
+
+    // Show practice carousel.
+    if (view === "carousel") {
+      showCarouselView(deck);
+
+      return;
+    }
+  }
+
+  // -----------------------------------
+  // NOT FOUND
+  // -----------------------------------
+
+  notFoundSectionEl.style.display = "block";
 }
 
-practiceBtnEl.addEventListener("click", () => {
-  if (currentDeck) {
-    window.location.hash = `carousel/${currentDeck.id}`;
-  }
+// =====================================
+// NEW DECK BUTTON
+// =====================================
+
+newDeckBtn.addEventListener("click", () => {
+  window.alert(
+    "New deck creation is not implemented yet."
+  );
 });
 
-renderHomeView();
+// =====================================
+// NEW CARD BUTTON
+// =====================================
+
+newCardBtn.addEventListener("click", () => {
+  window.alert(
+    "New card creation is not implemented yet."
+  );
+});
+
+// =====================================
+// EVENT LISTENERS
+// =====================================
+
+// Update the view when the URL hash changes.
+window.addEventListener("hashchange", router);
+
+// Render the initial page.
 router();
 
-window.addEventListener("hashchange", router);
+// =====================================
+// EXPORTS
+// =====================================
+
+export { getActiveCards };
+

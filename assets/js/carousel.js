@@ -1,8 +1,16 @@
+
 import { hexToString } from "./colors.js";
 
 const carouselEl = document.querySelector(".carousel");
-const carouselTitleEl = carouselEl.querySelector(".carousel__title");
-const carouselCardEl = carouselEl.querySelector(".carousel__card");
+
+const carouselTitleEl = carouselEl.querySelector(
+  ".carousel__title"
+);
+
+const carouselCardEl = carouselEl.querySelector(
+  ".carousel__card"
+);
+
 const carouselCardTextEl = carouselEl.querySelector(
   ".carousel__card-text"
 );
@@ -10,9 +18,11 @@ const carouselCardTextEl = carouselEl.querySelector(
 const leftBtn = carouselEl.querySelector(
   ".carousel__btn_type_left"
 );
+
 const rightBtn = carouselEl.querySelector(
   ".carousel__btn_type_right"
 );
+
 const flipBtn = carouselEl.querySelector(
   ".carousel__btn_type_flip"
 );
@@ -29,7 +39,7 @@ function enableButton(buttonEl) {
 
 function removeColorClasses(element) {
   [...element.classList].forEach((className) => {
-    if (className.includes("_color_")) {
+    if (className.startsWith("carousel__card_color_")) {
       element.classList.remove(className);
     }
   });
@@ -40,15 +50,14 @@ function getCarouselTitleString(deck, currentIndex) {
 }
 
 function renderCarouselView(deck) {
+  if (!deck.cards.length) {
+    return;
+  }
+
   let currentIndex = 0;
   let showingQuestion = true;
 
-  const colorName = hexToString(deck.color);
-
-  removeColorClasses(carouselCardEl);
-  carouselCardEl.classList.add(
-    `carousel__card_color_${colorName}`
-  );
+  const colorName = hexToString(deck.color) || "green";
 
   function updateArrowButtons() {
     if (currentIndex === 0) {
@@ -72,11 +81,13 @@ function renderCarouselView(deck) {
       currentIndex
     );
 
+    removeColorClasses(carouselCardEl);
+
     if (showingQuestion) {
       carouselCardTextEl.textContent = currentCard.question;
 
-      carouselCardEl.classList.remove(
-        "carousel__card_color_white"
+      carouselCardEl.classList.add(
+        `carousel__card_color_${colorName}`
       );
     } else {
       carouselCardTextEl.textContent = currentCard.answer;
@@ -85,6 +96,11 @@ function renderCarouselView(deck) {
         "carousel__card_color_white"
       );
     }
+
+    flipBtn.setAttribute(
+      "aria-label",
+      showingQuestion ? "Show answer" : "Show question"
+    );
 
     updateArrowButtons();
   }
@@ -114,5 +130,3 @@ function renderCarouselView(deck) {
 }
 
 export { renderCarouselView };
-
-

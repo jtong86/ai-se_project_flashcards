@@ -1,62 +1,82 @@
+
 import { hexToString } from "./colors.js";
 
+const deckViewEl = document.querySelector("#deck-view");
 const cardTemplateEl = document.querySelector("#card-template");
 
-const deckViewSectionEl = document.querySelector("#deck-view");
-const deckViewTitleEl =
-  deckViewSectionEl.querySelector(".gallery__title");
-const deckViewListEl =
-  deckViewSectionEl.querySelector(".gallery__list");
+const titleEl = deckViewEl.querySelector(".gallery__title");
+const listEl = deckViewEl.querySelector(".gallery__list");
+const practiceBtn = deckViewEl.querySelector(
+  ".gallery__practice-btn"
+);
 
-function createCardEl(card, deck) {
+function createCardEl(card, deck, onDelete) {
   const cloneEl = cardTemplateEl.content
     .querySelector("li")
     .cloneNode(true);
 
   const cardEl = cloneEl.querySelector(".card");
-  const titleEl = cloneEl.querySelector(".card__title");
-  const flipBtnEl = cloneEl.querySelector(
+  const textEl = cloneEl.querySelector(".card__title");
+  const flipBtn = cloneEl.querySelector(
     ".card__btn_type_flip"
   );
-  const deleteBtnEl = cloneEl.querySelector(
+  const deleteBtn = cloneEl.querySelector(
     ".card__btn_type_delete"
   );
 
-  let isFlipped = false;
+  const colorName = hexToString(deck.color) || "green";
 
-  titleEl.textContent = card.question;
+  cardEl.classList.add(`card_color_${colorName}`);
 
-  const colorName = hexToString(deck.color);
+  let showingQuestion = true;
 
-  cardEl.classList.remove("card_color_green");
+  function updateCard() {
+    textEl.textContent = showingQuestion
+      ? card.question
+      : card.answer;
 
-  if (colorName) {
-    cardEl.classList.add(`card_color_${colorName}`);
+    cardEl.classList.toggle(
+      "card_color_white",
+      !showingQuestion
+    );
+
+    flipBtn.setAttribute(
+      "aria-label",
+      showingQuestion ? "Show answer" : "Show question"
+    );
   }
 
-  flipBtnEl.addEventListener("click", () => {
-    isFlipped = !isFlipped;
-
-    titleEl.textContent = isFlipped
-      ? card.answer
-      : card.question;
+  flipBtn.addEventListener("click", () => {
+    showingQuestion = !showingQuestion;
+    updateCard();
   });
 
-  deleteBtnEl.addEventListener("click", () => {
-    cloneEl.remove();
+  deleteBtn.addEventListener("click", () => {
+    if (window.confirm("Delete this flashcard?")) {
+      onDelete(card.id);
+    }
   });
+
+  updateCard();
 
   return cloneEl;
 }
 
-function renderDeckView(deck) {
-  deckViewTitleEl.textContent = deck.name;
-  deckViewListEl.innerHTML = "";
+function renderDeckView(deck, onDelete = () => {}) {
+  titleEl.textContent = deck.name;
+
+  listEl.replaceChildren();
 
   deck.cards.forEach((card) => {
-    const cardEl = createCardEl(card, deck);
-    deckViewListEl.append(cardEl);
+    const cardEl = createCardEl(card, deck, onDelete);
+    listEl.append(cardEl);
   });
+
+  practiceBtn.disabled = deck.cards.length === 0;
+
+  practiceBtn.onclick = () => {
+    window.location.hash = `carousel/${deck.id}`;
+  };
 }
 
 export { renderDeckView };

@@ -1,73 +1,99 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
 
     <meta
       name="description"
       content="A responsive app to help students study"
     />
-    <meta name="keywords" content="flashcards, education, studying" />
+    <meta
+      name="keywords"
+      content="flashcards, education, studying"
+    />
     <meta name="author" content="Jason Tong" />
 
-    <link rel="icon" href="favicon.ico" />
+    <link rel="icon" href="./favicon.ico" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="assets/css/index.css" />
+    <link rel="stylesheet" href="./assets/css/index.css" />
 
     <title>Flash Cards</title>
   </head>
 
   <body class="page">
+    <!-- HEADER -->
     <header class="header">
       <h1 class="header__title">
-        <a href="#home" class="header__link">Flash Cards</a>
+        <a class="header__link" href="#home">
+          Flash Cards
+        </a>
       </h1>
 
       <nav class="nav">
         <ul class="nav__links">
           <li>
-            <a href="#home" class="nav__link">My Decks</a>
+            <a class="nav__link" href="#home">
+              My Decks
+            </a>
           </li>
           <li>
-            <a href="#about" class="nav__link">About</a>
+            <a class="nav__link" href="#about">
+              About
+            </a>
           </li>
         </ul>
       </nav>
     </header>
 
+    <!-- MAIN -->
     <main class="page__main-content">
-      <!-- HOME -->
+
+      <!-- HOME / MY DECKS -->
       <section class="gallery" id="home">
-        <h2 class="gallery__title">My Decks</h2>
+        <div class="gallery__header">
+          <h2 class="gallery__title">
+            My Decks
+          </h2>
+        </div>
 
         <ul class="gallery__list"></ul>
 
         <button
-          type="button"
           class="gallery__new-card-btn"
-          aria-label="Create a new deck"
+          type="button"
+          id="new-deck-btn"
         >
           + New Deck
         </button>
       </section>
 
-      <!-- DECK VIEW -->
+      <!-- INDIVIDUAL DECK -->
       <section class="gallery" id="deck-view">
         <div class="gallery__header">
-          <h2 class="gallery__title"></h2>
+          <h2 class="gallery__title">
+            Deck
+          </h2>
 
           <button
-            type="button"
             class="gallery__practice-btn"
+            type="button"
           >
             Practice
           </button>
@@ -76,50 +102,43 @@
         <ul class="gallery__list"></ul>
 
         <button
-          type="button"
           class="gallery__new-card-btn"
-          aria-label="Create a new card"
+          type="button"
+          id="new-card-btn"
         >
           + New Card
         </button>
       </section>
 
       <!-- CAROUSEL -->
-      <section class="carousel">
+      <section class="carousel" id="carousel">
         <h2 class="carousel__title"></h2>
 
         <div class="carousel__row">
-          <button
-            type="button"
-            aria-label="Go to previous card in deck"
-            class="carousel__btn carousel__btn_type_left"
-          ></button>
-
           <div class="carousel__card">
             <p class="carousel__card-text"></p>
           </div>
+        </div>
+
+        <div class="carousel__controls">
+          <button
+            type="button"
+            class="carousel__btn carousel__btn_type_left"
+            aria-label="Previous flashcard"
+          ></button>
 
           <button
             type="button"
-            aria-label="Go to next card in deck"
+            class="carousel__btn carousel__btn_type_flip"
+            aria-label="Flip flashcard"
+          ></button>
+
+          <button
+            type="button"
             class="carousel__btn carousel__btn_type_right"
+            aria-label="Next flashcard"
           ></button>
         </div>
-
-        <button
-          type="button"
-          aria-label="Flip current card"
-          class="carousel__btn carousel__btn_type_flip"
-        ></button>
-      </section>
-
-      <!-- NOT FOUND -->
-      <section class="not-found" id="not-found">
-        <h2 class="not-found__title">404 Not Found</h2>
-
-        <p class="not-found__text">
-          The page you're looking for doesn't exist.
-        </p>
       </section>
 
       <!-- ABOUT -->
@@ -127,8 +146,20 @@
         <h2 class="about__title">About</h2>
 
         <p class="about__text">
-          Flash Cards is a responsive app designed to help students study
-          and review important information using flashcards.
+          Flash Cards is a responsive app designed to
+          help students study and review important
+          information using flashcards.
+        </p>
+      </section>
+
+      <!-- NOT FOUND -->
+      <section class="not-found" id="not-found">
+        <h2 class="not-found__title">
+          404 Not Found
+        </h2>
+
+        <p class="not-found__text">
+          The page you're looking for doesn't exist.
         </p>
       </section>
     </main>
@@ -136,10 +167,10 @@
     <!-- DECK TEMPLATE -->
     <template id="deck-template">
       <li>
-        <article class="card card_color_green">
+        <article class="card">
           <a
-            href="#"
             class="card__link"
+            href="#"
             aria-label="Open deck"
           ></a>
 
@@ -149,8 +180,8 @@
             <p class="card__card-count"></p>
 
             <button
-              type="button"
               class="card__btn card__btn_type_delete"
+              type="button"
               aria-label="Delete deck"
             ></button>
           </div>
@@ -158,22 +189,22 @@
       </li>
     </template>
 
-    <!-- CARD TEMPLATE -->
+    <!-- INDIVIDUAL CARD TEMPLATE -->
     <template id="card-template">
       <li>
-        <article class="card card_color_green">
+        <article class="card">
           <h3 class="card__title"></h3>
 
           <div class="card__footer">
             <button
-              type="button"
               class="card__btn card__btn_type_flip"
+              type="button"
               aria-label="Flip card"
             ></button>
 
             <button
-              type="button"
               class="card__btn card__btn_type_delete"
+              type="button"
               aria-label="Delete card"
             ></button>
           </div>
@@ -181,10 +212,17 @@
       </li>
     </template>
 
+    <!-- FOOTER -->
     <footer class="footer">
-      <p class="footer__text">&copy; 2026 Jason Tong</p>
+      <p class="footer__text">
+        &copy; 2026 Jason Tong
+      </p>
     </footer>
 
-    <script type="module" src="assets/js/index.js"></script>
+    <script
+      type="module"
+      src="./assets/js/index.js"
+    ></script>
   </body>
 </html>
+
