@@ -16,8 +16,19 @@
   font-size: 16px;
   font-weight: 500;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav__link:hover {
   text-decoration: underline;
+}
+
+@media screen and (max-width: 360px) {
+  .nav__links {
+    gap: 12px;
+  }
+
+  .nav__link {
+    font-size: 14px;
+  }
 }

@@ -1,8 +1,3 @@
-
-/* ===================================== */
-/* PAGE - DESKTOP STYLES                 */
-/* ===================================== */
-
 .page {
   display: flex;
   flex-direction: column;
@@ -18,55 +13,45 @@
 
 .page__main-content {
   flex-grow: 1;
-  margin-top: 60px;
-  margin-bottom: 138px;
+  min-width: 0;
+  margin: 60px 0 138px;
 }
 
 .page__main-content_location_carousel {
   margin-top: 40px;
 }
 
-/* ===================================== */
-/* MOBILE RESPONSIVE STYLES              */
-/* FIGMA MOBILE DESIGN                   */
-/* ===================================== */
-
 @media screen and (max-width: 600px) {
-  /* Page Container */
-
   .page {
-    width: 100%;
-    max-width: none;
-    min-height: 100vh;
     min-height: 100dvh;
-    margin: 0;
     padding: 20px 20px 22px;
     line-height: 1.2;
   }
 
-  /* Main Content */
-
   .page__main-content {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    min-width: 0;
-    margin-top: 36px;
-    margin-bottom: 24px;
+    margin: 36px 0 32px;
   }
 
-  /* Carousel Page Layout */
-
   .page__main-content_location_carousel {
-    margin-top: 0;
-    margin-bottom: 24px;
-    justify-content: center;
+    margin-top: 12px;
   }
 }
 
-/* ===================================== */
-/* SMALL MOBILE SCREENS                  */
-/* ===================================== */
+/* Give the gallery a bounded scroll area when the screen has room for it. */
+@media screen and (max-width: 600px) and (min-height: 360px) {
+  .page {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .page__main-content {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
 
 @media screen and (max-width: 360px) {
   .page {
@@ -74,11 +59,10 @@
   }
 
   .page__main-content {
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin: 28px 0 24px;
   }
 
   .page__main-content_location_carousel {
-    margin-top: 0;
+    margin-top: 12px;
   }
 }

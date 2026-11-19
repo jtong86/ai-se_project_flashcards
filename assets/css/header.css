@@ -6,11 +6,12 @@
 
 .header__title {
   margin: 0;
+  font-size: 24px;
 }
 
 .header__link {
   color: #1a1a1a;
-  font-size: 24px;
+  font-size: inherit;
   font-weight: 900;
   letter-spacing: -0.24px;
   text-decoration: none;
@@ -18,4 +19,22 @@
 
 .header__link:hover {
   text-decoration: underline;
+}
+
+@media screen and (max-width: 600px) {
+  .header {
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .header__title {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .header__title {
+    font-size: 17px;
+  }
 }

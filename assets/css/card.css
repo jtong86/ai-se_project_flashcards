@@ -4,7 +4,8 @@
   flex-direction: column;
   justify-content: space-between;
   width: 325px;
-  height: 205px;
+  min-height: 205px;
+  gap: 12px;
   padding: 20px;
   border-radius: 20px;
   cursor: pointer;
@@ -51,6 +52,7 @@
   font-size: 24px;
   font-weight: 700;
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .card__footer {
@@ -84,7 +86,8 @@
   opacity: 50%;
 }
 
-.card__btn:hover {
+.card__btn:hover,
+.card__btn:focus-visible {
   opacity: 100%;
 }
 
@@ -94,4 +97,27 @@
 
 .card__btn_type_delete {
   background-image: url("../images/delete.svg");
+}
+
+@media screen and (max-width: 600px) {
+  .card {
+    width: 100%;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.12);
+  }
+
+  .card__btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .card {
+    min-height: 190px;
+    padding: 16px;
+  }
+
+  .card__title {
+    font-size: 22px;
+  }
 }

@@ -1,51 +1,54 @@
-
 .gallery {
   display: none;
-}
-
-.gallery__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
 .gallery__title {
   margin: 0 0 20px;
   font-size: 40px;
   font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .gallery__list {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 18px;
-  row-gap: 20px;
+  gap: 20px 18px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .gallery__list > li {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
+  min-width: 0;
+}
+
+.gallery__actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.gallery__actions button {
+  border: 0;
+  font-family: inherit;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
 }
 
 .gallery__new-card-btn {
   width: 325px;
-  height: 205px;
-  margin-top: 20px;
+  max-width: 100%;
+  min-height: 205px;
   padding: 20px;
-  border: none;
   border-radius: 20px;
   background-color: #d9d9d9;
   color: #1a1a1a80;
-  font-family: Inter, Arial, Helvetica, sans-serif;
   font-size: 24px;
-  font-weight: 700;
-  line-height: 1.2;
   text-align: left;
-  cursor: pointer;
 }
 
 .gallery__new-card-btn:hover {
@@ -54,123 +57,93 @@
 }
 
 .gallery__practice-btn {
-  height: 44px;
-  margin: 0 0 20px;
+  min-height: 44px;
   padding: 0 20px;
-  border: none;
   border-radius: 8px;
   background-color: #1a1a1a;
   color: #fff;
-  font-family: Inter, Arial, Helvetica, sans-serif;
   font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
 }
 
-.gallery__practice-btn:hover {
-  opacity: 0.8;
+.gallery__practice-btn:hover:enabled {
+  background-color: #333;
 }
 
 .gallery__practice-btn:disabled {
   opacity: 0.4;
-  cursor: not-allowed;
+  cursor: default;
 }
 
-/* Mobile */
-
 @media screen and (max-width: 600px) {
-  .gallery {
-    position: relative;
-    flex-direction: column;
-    width: 100%;
-    min-height: 0;
-  }
-
-  .gallery__header {
-    display: contents;
-  }
-
   .gallery__title {
-    order: 0;
-    margin: 0 0 16px;
-    font-size: 30px;
-    line-height: 1.2;
+    flex-shrink: 0;
+    margin-bottom: 16px;
+    font-size: 32px;
   }
 
   .gallery__list {
-    order: 1;
-    display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    gap: 20px;
-    width: 100%;
-    margin: 0;
-    padding: 0 0 12px;
   }
 
   .gallery__list > li {
-    width: 100%;
     flex-shrink: 0;
+    width: 100%;
   }
 
-  .gallery__new-card-btn {
-    order: 2;
+  .gallery__actions {
     flex-shrink: 0;
-    width: 100%;
-    height: 44px;
-    min-height: 44px;
+    align-items: stretch;
     margin-top: 12px;
-    padding: 0 12px;
+  }
+
+  .gallery__actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
     border-radius: 8px;
-    background-color: #1a1a1a;
-    color: #fff;
     font-size: 15px;
     font-weight: 500;
     text-align: center;
   }
 
-  .gallery__new-card-btn:hover {
-    background-color: #333;
+  .gallery__new-card-btn {
+    color: #1a1a1a;
+  }
+
+  .gallery__new-card-btn_type_deck {
+    background-color: #1a1a1a;
     color: #fff;
   }
 
-  .gallery__practice-btn {
-    order: 3;
-    flex-shrink: 0;
-    width: 100%;
-    height: 44px;
-    min-height: 44px;
-    margin: 12px 0 0;
-    padding: 0 12px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  /* Keep action buttons near the bottom
-     when the viewport has extra space. */
-
-  .gallery__list {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    scrollbar-width: thin;
+  .gallery__new-card-btn_type_deck:hover {
+    background-color: #333;
   }
 }
 
-/* Smaller phones */
+@media screen and (max-width: 600px) and (min-height: 360px) {
+  .gallery {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  .gallery__list {
+    flex: 1 1 0;
+    min-height: 0;
+    padding-bottom: 40px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    mask-image: linear-gradient(#000 calc(100% - 40px), transparent);
+  }
+}
 
 @media screen and (max-width: 360px) {
   .gallery__title {
-    font-size: 26px;
+    font-size: 28px;
   }
 
   .gallery__list {
     gap: 16px;
-  }
-
-  .gallery__new-card-btn,
-  .gallery__practice-btn {
-    font-size: 14px;
   }
 }
